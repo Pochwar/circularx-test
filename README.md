@@ -1,8 +1,6 @@
-# Symfony Docker
+# Test CircularX
 
-A [Docker](https://www.docker.com/)-based installer and runtime for the [Symfony](https://symfony.com) web framework, with full [HTTP/2](https://symfony.com/doc/current/weblink.html), HTTP/3 and HTTPS support.
-
-![CI](https://github.com/dunglas/symfony-docker/workflows/CI/badge.svg)
+This test project is based on this repository [https://github.com/dunglas/symfony-docker](https://github.com/dunglas/symfony-docker) to have [Symfony](https://symfony.com) web framework, with full [HTTP/2](https://symfony.com/doc/current/weblink.html), HTTP/3 and HTTPS support.
 
 ## Getting Started
 
