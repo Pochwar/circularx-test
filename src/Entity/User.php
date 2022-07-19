@@ -7,8 +7,11 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
+#[UniqueEntity("email")]
 #[ORM\Table(name: '`user`')]
 #[ApiResource]
 class User
@@ -18,7 +21,8 @@ class User
     #[ORM\Column()]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, unique: true)]
+    #[Assert\Email]
     private ?string $email = null;
 
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Takeover::class, orphanRemoval: true)]
@@ -27,6 +31,14 @@ class User
     public function __construct()
     {
         $this->takeovers = new ArrayCollection();
+    }
+
+    public static function create(string $email): self
+    {
+        $user = new self();
+        $user->setEmail($email);
+
+        return $user;
     }
 
     public function getId(): ?int

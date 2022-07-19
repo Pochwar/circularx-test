@@ -27,6 +27,16 @@ class Product
     #[ORM\Column]
     private ?int $price = null;
 
+    public static function create(Brand $brand, string $name, int $price): self
+    {
+        $product = new self();
+        $product->setName($name);
+        $product->setBrand($brand);
+        $product->setPrice($price);
+
+        return $product;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
