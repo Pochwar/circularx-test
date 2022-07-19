@@ -133,3 +133,19 @@ Dernière étape avant de me mettre à coder : définir les différents endpoint
   - format : `json`
   - contenu : tableau d'objet _Takeover_
 - Cas d'erreur : aucun
+
+## Réalisation
+
+Pour info, je n'avais jamais utilisé Symfony 6 jusqu'a présent, je n'avais utilisé que la version 5. Je n'ai pas vu de gros changements avec ce que j'ai l'habitude de faire, à part l'utilisation des attributes au lieu des annotations
+
+### Tests
+Je voulais initialement travailler en TDD, mais, n'ayant jamais utilisé API Platform auparavant ni le maker-bundle, je ne me rendai pas compte à quel point cela "mâche" le travail. Et là ou je comptais créer mes entités, mes repositories et mes controllers, le maker-bundle a généré automatiquement les entités et les repositories. Quant aux controlleurs d'API que je comptais faire, nul besoin car API Platform se base sur les entités et les attributes pour fonctionner.
+
+Sans avoir fait une ligne de code, j'avais une API fonctionelle.
+A défaut de faire du TDD donc, j'ai entrepris de mettre en place des tests fonctionnels concernant l'API, a savoir requeter des endpoints de l'API et vérifier que l'on obtient bien le résultat attendu.
+
+J'ai donc mis en place les fixtures, une base de donnée de test SQLite et ai commencé a écrire les tests.
+
+J'ai utilisé les ApiTestCase fournis par API Platform. J'ai commencé par des tests sur les Users afin d'avoir un cas simple de requête GET, et j'ai été surpris par le format, en effet l'API utilise par défaut le format json-ld, que je ne connaissais pas, j'ai du m'adapter a cette manière de communiquer avec l'API dans l'écriture de mes tests.
+
+Un point sur lequel j'ai bloqué : le test des cas d'erreurs. en effet, dans l'interface web d'API platform, j'ai bien une erreur 422 quand je fourni un email eronné ou déjà dans la base, mais dans mes tests, impossible de tester ça car la couche Symfony renvoie une exception ClientException. Après avoir passé du temps a chercher commen résoudre ça, je me suis résolu a catcher l'exception et tester le message d'erreur.

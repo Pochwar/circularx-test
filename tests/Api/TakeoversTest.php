@@ -4,6 +4,8 @@ namespace App\Tests\Controller\Api;
 
 use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
 use App\DataFixtures\AppFixtures;
+use App\Entity\Product;
+use App\Entity\Takeover;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Liip\TestFixturesBundle\Services\DatabaseToolCollection;
@@ -11,10 +13,13 @@ use Liip\TestFixturesBundle\Services\DatabaseTools\AbstractDatabaseTool;
 use Symfony\Component\HttpClient\Exception\ClientException;
 
 
-class UsersTest extends ApiTestCase
+class TakeoversTest extends ApiTestCase
 {
     /** @var AbstractDatabaseTool */
     protected $databaseTool;
+
+    /** @var EntityManagerInterface */
+    protected $entityManager;
 
     public function setUp(): void
     {
@@ -24,33 +29,34 @@ class UsersTest extends ApiTestCase
         $this->entityManager = self::getContainer()->get(EntityManagerInterface::class);
     }
 
-    public function testGetAll(): void
+    public function testCreate(): void
     {
         $this->databaseTool->loadFixtures([
             AppFixtures::class
         ]);
 
-        $response = static::createClient()->request('GET', '/api/users');
+        /** @var User $user1 */
+        $user1 = $this->entityManager->getRepository(User::class)->findOneBy(['email' => 'user1@test-circularx.com']);
 
-        $content = json_decode($response->getContent(), true);
+        /** @var Product $galaxyS22 */
+        $galaxyS22 = $this->entityManager->getRepository(Product::class)->findOneBy(['name' => 'Galaxy S22']);
 
-        $this->assertResponseIsSuccessful();
+        /** @var Product $onePLusNord2T */
+        $onePLusNord2T = $this->entityManager->getRepository(Product::class)->findOneBy(['name' => 'OnePlus Nord 2T']);
 
-        $this->assertEquals($content['hydra:member'][0]['email'], "user1@test-circularx.com");
-        $this->assertEquals($content['hydra:member'][1]['email'], "user2@test-circularx.com");
-
-        $this->assertMatchesResourceCollectionJsonSchema(User::class);
-    }
-
-    public function testCreateOk(): void
-    {
-        $this->databaseTool->loadFixtures([
-            AppFixtures::class
-        ]);
-
-        $response = static::createClient()->request('POST', '/api/users', [
+        $response = static::createClient()->request('POST', '/api/takeovers', [
             'json' => [
-                'email' => 'test@circularx.com'
+                'owner' => \sprintf('/api/users/%d', $user1->getId()),
+                'products' => [
+                    [
+                        'product' => \sprintf('/api/products/%d', $galaxyS22->getId()),
+                        'price' => $galaxyS22->getPrice(),
+                    ],
+                    [
+                        'product' => \sprintf('/api/products/%d', $onePLusNord2T->getId()),
+                        'price' => $onePLusNord2T->getPrice(),
+                    ],
+                ]
             ]
         ]);
 
@@ -58,47 +64,8 @@ class UsersTest extends ApiTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $this->assertEquals($content['email'], "test@circularx.com");
-    }
-
-    public function testCreateEmailDuplicate(): void
-    {
-        $this->databaseTool->loadFixtures([
-            AppFixtures::class
-        ]);
-
-        $client = static::createClient();
-
-        $response = $client->request('POST', '/api/users', [
-            'json' => [
-                'email' => 'user2@test-circularx.com'
-            ]
-        ]);
-
-        try {
-            $content = json_decode($response->getContent(), true);
-        } catch (ClientException $e) {
-            $this->assertStringContainsString('email: This value is already used.', $e->getMessage());
-        }
-    }
-
-    public function testCreateEmailNotValid(): void
-    {
-        $this->databaseTool->loadFixtures([
-            AppFixtures::class
-        ]);
-
-        $response = static::createClient()->request('POST', '/api/users', [
-            'json' => [
-                'email' => 'user2@test-circularx'
-            ]
-        ]);
-
-        try {
-            $content = json_decode($response->getContent(), true);
-        } catch (ClientException $e) {
-            $this->assertStringContainsString('email: This value is not a valid email address.', $e->getMessage());
-        }
+        $this->assertEquals($content['products'][0]['product']['name'], $galaxyS22->getName());
+        $this->assertCount(2, $content['products']);
     }
 
     protected function tearDown(): void

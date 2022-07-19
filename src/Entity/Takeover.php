@@ -21,7 +21,7 @@ class Takeover
     #[ORM\JoinColumn(nullable: false)]
     private ?User $owner = null;
 
-    #[ORM\OneToMany(mappedBy: 'takeover', targetEntity: ProductTakeover::class)]
+    #[ORM\OneToMany(mappedBy: 'takeover', targetEntity: ProductTakeover::class, cascade: ['persist', 'remove'])]
     private Collection $products;
 
     public function __construct()
