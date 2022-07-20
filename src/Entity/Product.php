@@ -6,6 +6,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 #[UniqueEntity(fields: ['name', 'brand'])]
@@ -25,6 +26,7 @@ class Product
     private ?Brand $brand = null;
 
     #[ORM\Column]
+    #[Assert\Positive]
     private ?int $price = null;
 
     public static function create(Brand $brand, string $name, int $price): self

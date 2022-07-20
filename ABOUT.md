@@ -148,4 +148,29 @@ J'ai donc mis en place les fixtures, une base de donnée de test SQLite et ai co
 
 J'ai utilisé les ApiTestCase fournis par API Platform. J'ai commencé par des tests sur les Users afin d'avoir un cas simple de requête GET, et j'ai été surpris par le format, en effet l'API utilise par défaut le format json-ld, que je ne connaissais pas, j'ai du m'adapter a cette manière de communiquer avec l'API dans l'écriture de mes tests.
 
-Un point sur lequel j'ai bloqué : le test des cas d'erreurs. en effet, dans l'interface web d'API platform, j'ai bien une erreur 422 quand je fourni un email eronné ou déjà dans la base, mais dans mes tests, impossible de tester ça car la couche Symfony renvoie une exception ClientException. Après avoir passé du temps a chercher commen résoudre ça, je me suis résolu a catcher l'exception et tester le message d'erreur.
+Un point sur lequel j'ai bloqué : le test des cas d'erreurs. en effet, dans l'interface web d'API platform, j'ai bien une erreur 422 quand je fourni un email eronné ou déjà dans la base, mais dans mes tests, impossible de tester ça car la couche Symfony renvoie une exception ClientException. Après avoir passé du temps à chercher comment résoudre ça, je me suis résolu à catcher l'exception et tester le message d'erreur.
+
+
+### Import CSV
+J'ai d'abord pensé utiliser une librairie pour faire cela, mais en cherchant de la doc, j'ai trouvé un tutoriel expliquant comment importer et lire un fichier csv. Le code etant relativement simple, j'ai décider de faire l'implémentation sans librairie.
+
+J'ai créé la commande `app:import-product-csv` qui prend pour seul argument le nom du fichier csv à importer, qui doit se trouver dans le répertoire `/import`.
+
+Je fais quelques vérifications, comme l'existance de la marque, le fait que le produit n'existe pas déjà en base de données et que le prix soit positif (l'assertion sur l'entité ne fonctionne pas ici).
+
+Un fichier d'exemple se trouve dans le répertoire `/import`, il est possible de tester directement la commande :
+```shell
+bin/console app:import-product-csv products.csv
+```
+
+### TODO
+- finir les tests
+  - Consulter le prix total et l’email client de la commande de reprise
+  - Consulter les produits attachés à une commande
+  - Lister les produits pouvant être repris
+  - Lister les commandes de reprise existantes comportant au moins un produit donné
+  - Lister les commandes de reprise existantes comportant au moins une marque donnée
+  - test prix positif produit
+  - test produt unique
+
+- mettre en place GitHub Actions
