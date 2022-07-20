@@ -7,26 +7,43 @@ use App\Repository\TakeoverRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: TakeoverRepository::class)]
-#[ApiResource]
+#[ApiResource(normalizationContext: ['groups' => ['takeover']])]
 class Takeover
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column()]
+    #[Groups("takeover")]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'takeovers')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups("takeover")]
     private ?User $owner = null;
 
     #[ORM\OneToMany(mappedBy: 'takeover', targetEntity: ProductTakeover::class, cascade: ['persist', 'remove'])]
+    #[Groups("takeover")]
     private Collection $products;
 
     public function __construct()
     {
         $this->products = new ArrayCollection();
+    }
+
+    public static function create(User $user, array $products = []): self
+    {
+        $takeover = new self();
+        $takeover->setOwner($user);
+
+        foreach ($products as $product) {
+            $productTakeover = ProductTakeover::create($product, $takeover);
+            $takeover->addProduct($productTakeover);
+        }
+
+        return $takeover;
     }
 
     public function getId(): ?int
@@ -74,5 +91,16 @@ class Takeover
         }
 
         return $this;
+    }
+
+    #[Groups("takeover")]
+    public function getTotalPrice(): int
+    {
+        $totalPrice = 0;
+        foreach ($this->getProducts() as $product) {
+            $totalPrice += $product->getPrice();
+        }
+
+        return $totalPrice;
     }
 }

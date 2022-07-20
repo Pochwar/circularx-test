@@ -24,22 +24,24 @@ class UsersTest extends ApiTestCase
         $this->entityManager = self::getContainer()->get(EntityManagerInterface::class);
     }
 
-    public function testGetAll(): void
+    public function testGetAllUsers(): void
     {
         $this->databaseTool->loadFixtures([
             AppFixtures::class
         ]);
 
-        $response = static::createClient()->request('GET', '/api/users');
+        $response = static::createClient()->request('GET', '/api/users', [
+            'headers' => ['Accept' => 'application/json'],
+        ]);
 
         $content = json_decode($response->getContent(), true);
 
         $this->assertResponseIsSuccessful();
-
-        $this->assertEquals($content['hydra:member'][0]['email'], "user1@test-circularx.com");
-        $this->assertEquals($content['hydra:member'][1]['email'], "user2@test-circularx.com");
-
+        $this->assertCount(2, $content);
         $this->assertMatchesResourceCollectionJsonSchema(User::class);
+
+        $this->assertEquals($content[0]['email'], "user1@test-circularx.com");
+        $this->assertEquals($content[1]['email'], "user2@test-circularx.com");
     }
 
     public function testCreateOk(): void
@@ -49,6 +51,7 @@ class UsersTest extends ApiTestCase
         ]);
 
         $response = static::createClient()->request('POST', '/api/users', [
+            'headers' => ['Accept' => 'application/json'],
             'json' => [
                 'email' => 'test@circularx.com'
             ]
@@ -70,6 +73,7 @@ class UsersTest extends ApiTestCase
         $client = static::createClient();
 
         $response = $client->request('POST', '/api/users', [
+            'headers' => ['Accept' => 'application/json'],
             'json' => [
                 'email' => 'user2@test-circularx.com'
             ]
@@ -89,6 +93,7 @@ class UsersTest extends ApiTestCase
         ]);
 
         $response = static::createClient()->request('POST', '/api/users', [
+            'headers' => ['Accept' => 'application/json'],
             'json' => [
                 'email' => 'user2@test-circularx'
             ]

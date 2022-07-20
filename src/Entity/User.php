@@ -9,23 +9,27 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[UniqueEntity("email")]
 #[ORM\Table(name: '`user`')]
-#[ApiResource]
+#[ApiResource(normalizationContext: ['groups' => ['user']])]
 class User
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column()]
+    #[Groups(["user", "takeover"])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255, unique: true)]
     #[Assert\Email]
+    #[Groups(["user", "takeover"])]
     private ?string $email = null;
 
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Takeover::class, orphanRemoval: true)]
+    #[Groups("user")]
     private Collection $takeovers;
 
     public function __construct()

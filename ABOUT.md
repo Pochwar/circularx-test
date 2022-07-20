@@ -67,7 +67,7 @@ Dernière étape avant de me mettre à coder : définir les différents endpoint
 
 ### Créer des commandes de reprise
 - méthode : `POST`
-- url : `/api/takeover`
+- url : `/api/takeovers`
 - body params :
 
 ```json
@@ -91,7 +91,7 @@ Dernière étape avant de me mettre à coder : définir les différents endpoint
 
 ### Consulter le prix total et l’email client de la commande de reprise
 - méthode : `GET`
-- url : `/api/takeover/{id}`
+- url : `/api/takeovers/{id}`
 - query params : aucun
 - réponse :
   - code : `200`
@@ -101,9 +101,10 @@ Dernière étape avant de me mettre à coder : définir les différents endpoint
   - `404` (Not Found) : La reprise demandée n'existe pas
 
 
-### Consulter les produits attachés à une commande
+### ~~Consulter les produits attachés à une commande~~
+[EDIT] Je n'ai finalement pas mis en place ce endpoint (qui n'est pas géré par defaut par API PLatform) car les produits sont consultables directement depuis une commande
 - méthode : `GET`
-- url : `/api/takeover/{id}/products`
+- url : `/api/takeovers/{id}/products`
 - query params : aucun
 - réponse :
   - code : `200`
@@ -114,7 +115,7 @@ Dernière étape avant de me mettre à coder : définir les différents endpoint
 
 ### Lister les produits pouvant être repris
 - méthode : `GET`
-- url : `/api/product`
+- url : `/api/products`
 - query params : aucun
 - réponse :
   - code : `200`
@@ -124,7 +125,7 @@ Dernière étape avant de me mettre à coder : définir les différents endpoint
 
 ### Lister les commandes de reprise existantes comportant au moins un produit donné ou une marque donnée
 - méthode : `GET`
-- url : `/api/takeover`
+- url : `/api/takeovers`
 - query params :
   - productId (optionnel) : string
   - brandId (optionnel) : string
@@ -147,6 +148,8 @@ A défaut de faire du TDD donc, j'ai entrepris de mettre en place des tests fonc
 J'ai donc mis en place les fixtures, une base de donnée de test SQLite et ai commencé a écrire les tests.
 
 J'ai utilisé les ApiTestCase fournis par API Platform. J'ai commencé par des tests sur les Users afin d'avoir un cas simple de requête GET, et j'ai été surpris par le format, en effet l'API utilise par défaut le format json-ld, que je ne connaissais pas, j'ai du m'adapter a cette manière de communiquer avec l'API dans l'écriture de mes tests.
+
+[EDIT] J'ai fini par configurer l'API en format json, etant plus à l'aise avec ce format et par manque de temps pour bien apréhender json-ld.
 
 Un point sur lequel j'ai bloqué : le test des cas d'erreurs. en effet, dans l'interface web d'API platform, j'ai bien une erreur 422 quand je fourni un email eronné ou déjà dans la base, mais dans mes tests, impossible de tester ça car la couche Symfony renvoie une exception ClientException. Après avoir passé du temps à chercher comment résoudre ça, je me suis résolu à catcher l'exception et tester le message d'erreur.
 
@@ -176,10 +179,10 @@ Après un peu de temps a tester et adapter, j'ai fini par faire fonctionner les 
 
 ### TODO
 - finir les tests
-  - Consulter le prix total et l’email client de la commande de reprise
-  - Consulter les produits attachés à une commande
-  - Lister les produits pouvant être repris
+  - ~~Consulter le prix total et l’email client de la commande de reprise~~
+  - ~~Consulter les produits attachés à une commande~~
+  - ~~Lister les produits pouvant être repris~~
   - Lister les commandes de reprise existantes comportant au moins un produit donné
   - Lister les commandes de reprise existantes comportant au moins une marque donnée
-  - test prix positif produit
-  - test produt unique
+  - ~~test prix positif produit~~
+  - ~~test produit unique~~
