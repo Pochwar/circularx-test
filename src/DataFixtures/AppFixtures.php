@@ -26,7 +26,7 @@ class AppFixtures extends Fixture
         $this->createTakeovers($manager, $products, $users);
     }
 
-    #[ArrayShape(['samsung' => "\App\Entity\Brand", 'one-plus' => "\App\Entity\Brand"])]
+    #[ArrayShape(['samsung' => "\App\Entity\Brand", 'one-plus' => "\App\Entity\Brand", 'motorola' => "\App\Entity\Brand"])]
     private function createBrands(ObjectManager $manager): array
     {
         $samsung = Brand::create('Samsung');
@@ -35,15 +35,19 @@ class AppFixtures extends Fixture
         $onePlus = Brand::create('One Plus');
         $manager->persist($onePlus);
 
+        $motorola = Brand::create('Motorola');
+        $manager->persist($motorola);
+
         $manager->flush();
 
         return [
             'samsung' => $samsung,
-            'one-plus' => $onePlus
+            'one-plus' => $onePlus,
+            'motorola' => $motorola,
         ];
     }
 
-    #[ArrayShape(['galaxy-s-22' => "\App\Entity\Product", 'galaxy-z-fold-2' => "\App\Entity\Product", 'one-plus-10-pro' => "\App\Entity\Product", 'one-plus-nord-2-t' => "\App\Entity\Product"])]
+    #[ArrayShape(['galaxy-s-22' => "\App\Entity\Product", 'galaxy-z-fold-2' => "\App\Entity\Product", 'one-plus-10-pro' => "\App\Entity\Product", 'one-plus-nord-2-t' => "\App\Entity\Product", 'moto-g-41' => "\App\Entity\Product", 'moto-g-50' => "\App\Entity\Product"])]
     private function createProducts(ObjectManager $manager, array $brands): array
     {
         $galaxyS22 = Product::create($brands['samsung'], 'Galaxy S22', 119999);
@@ -58,6 +62,12 @@ class AppFixtures extends Fixture
         $onePlusNord2T = Product::create($brands['one-plus'], 'OnePlus Nord 2T', 42900);
         $manager->persist($onePlusNord2T);
 
+        $motoG41 = Product::create($brands['motorola'], 'Moto G41', 18900);
+        $manager->persist($motoG41);
+
+        $motoG50 = Product::create($brands['motorola'], 'Moto G50', 18900);
+        $manager->persist($motoG50);
+
         $manager->flush();
 
         return [
@@ -65,6 +75,8 @@ class AppFixtures extends Fixture
             'galaxy-z-fold-2' => $galaxyZFold2,
             'one-plus-10-pro' => $onePlus10Pro,
             'one-plus-nord-2-t' => $onePlusNord2T,
+            'moto-g-41' => $motoG41,
+            'moto-g-50' => $motoG50,
         ];
     }
 
@@ -99,6 +111,11 @@ class AppFixtures extends Fixture
             $products['galaxy-z-fold-2'],
         ]);
         $manager->persist($takeover2);
+
+        $takeover3 = Takeover::create($users['user-2'], [
+            $products['moto-g-41'],
+        ]);
+        $manager->persist($takeover3);
 
         $manager->flush();
     }

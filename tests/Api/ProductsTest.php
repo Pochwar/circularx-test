@@ -44,13 +44,15 @@ class ProductsTest extends ApiTestCase
         $content = json_decode($response->getContent(), true);
 
         $this->assertResponseIsSuccessful();
-        $this->assertCount(4, $content);
+        $this->assertCount(6, $content);
         $this->assertMatchesResourceCollectionJsonSchema(Product::class);
 
         $this->assertEquals($content[0]['name'], "Galaxy S22");
         $this->assertEquals($content[1]['name'], "Galaxy Z Fold 2");
         $this->assertEquals($content[2]['name'], "OnePlus 10 Pro");
         $this->assertEquals($content[3]['name'], "OnePlus Nord 2T");
+        $this->assertEquals($content[4]['name'], "Moto G41");
+        $this->assertEquals($content[5]['name'], "Moto G50");
     }
 
     public function testCreate(): void

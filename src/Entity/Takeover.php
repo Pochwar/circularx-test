@@ -2,7 +2,9 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Repository\TakeoverRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -11,6 +13,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: TakeoverRepository::class)]
 #[ApiResource(normalizationContext: ['groups' => ['takeover']])]
+#[ApiFilter(SearchFilter::class, properties: ['products.product.id' => 'exact', 'products.product.brand.id' => 'exact'])]
 class Takeover
 {
     #[ORM\Id]

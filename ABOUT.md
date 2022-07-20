@@ -182,7 +182,23 @@ Après un peu de temps a tester et adapter, j'ai fini par faire fonctionner les 
   - ~~Consulter le prix total et l’email client de la commande de reprise~~
   - ~~Consulter les produits attachés à une commande~~
   - ~~Lister les produits pouvant être repris~~
-  - Lister les commandes de reprise existantes comportant au moins un produit donné
+  - ~~Lister les commandes de reprise existantes comportant au moins un produit donné~~
   - Lister les commandes de reprise existantes comportant au moins une marque donnée
   - ~~test prix positif produit~~
   - ~~test produit unique~~
+
+
+### Reflexions
+temps court = stimulant
+
+Api Platform = gain de temps + prise de risque car peu utilisé
+assez pratique, prise en main facile, qui d des limitations sur cas matiers complexes
+découverte json-ld a approfondir
+
+Symfony 6 jamais utilisé
+POSTgreSQL jamias utilisé
+Github Actions jamais utilisé
+import csv jamais fait
+
+plus de test
+builder de test

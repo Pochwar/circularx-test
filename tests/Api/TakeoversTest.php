@@ -4,6 +4,7 @@ namespace App\Tests\Controller\Api;
 
 use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
 use App\DataFixtures\AppFixtures;
+use App\Entity\Brand;
 use App\Entity\Product;
 use App\Entity\Takeover;
 use App\Entity\User;
@@ -115,7 +116,7 @@ class TakeoversTest extends ApiTestCase
         $content = json_decode($response->getContent(), true);
 
         $this->assertResponseIsSuccessful();
-        $this->assertCount(2, $content);
+        $this->assertCount(3, $content);
         $this->assertMatchesResourceCollectionJsonSchema(Takeover::class);
 
         // First takeover
@@ -149,6 +150,16 @@ class TakeoversTest extends ApiTestCase
         $totalPrice2 = $content[1]['products'][0]['price']
             + $content[1]['products'][1]['price'];
         $this->assertEquals($totalPrice2, $content[1]['totalPrice']);
+
+        // Third takeover
+        $this->assertCount(1, $content[2]['products']);
+        $this->assertEquals("user2@test-circularx.com", $content[2]['owner']['email']);
+
+        $this->assertEquals("Moto G41", $content[2]['products'][0]['product']['name']);
+        $this->assertEquals(18900, $content[2]['products'][0]['price']);
+
+        $totalPrice3 = $content[2]['products'][0]['price'];
+        $this->assertEquals($totalPrice3, $content[2]['totalPrice']);
     }
 
     public function testGetFirstTakeover(): void
@@ -182,6 +193,67 @@ class TakeoversTest extends ApiTestCase
             + $content['products'][1]['price']
             + $content['products'][2]['price'];
         $this->assertEquals($totalPrice, $content['totalPrice']);
+    }
+
+    public function testGetAllTakeoversWithProduct(): void
+    {
+        $this->databaseTool->loadFixtures([
+            AppFixtures::class
+        ]);
+
+        /** @var Product $galaxyS22 */
+        $galaxyS22 = $this->entityManager->getRepository(Product::class)->findOneBy(['name' => 'Galaxy S22']);
+
+        $response = static::createClient()->request('GET', \sprintf('/api/takeovers?products.product.id=%d', $galaxyS22->getId()), [
+            'headers' => ['Accept' => 'application/json'],
+        ]);
+
+        $content = json_decode($response->getContent(), true);
+
+        $this->assertResponseIsSuccessful();
+        $this->assertCount(1, $content);
+        $this->assertMatchesResourceCollectionJsonSchema(Takeover::class);
+
+        // First takeover
+        $this->assertCount(3, $content[0]['products']);
+
+        $this->assertEquals("Galaxy S22", $content[0]['products'][0]['product']['name']);
+        $this->assertEquals("Galaxy Z Fold 2", $content[0]['products'][1]['product']['name']);
+        $this->assertEquals("OnePlus Nord 2T", $content[0]['products'][2]['product']['name']);
+    }
+
+    public function testGetAllTakeoversWithBrand(): void
+    {
+        $this->databaseTool->loadFixtures([
+            AppFixtures::class
+        ]);
+
+        /** @var Brand $samsung */
+        $samsung = $this->entityManager->getRepository(Brand::class)->findOneBy(['name' => 'Samsung']);
+
+        $response = static::createClient()->request('GET', \sprintf('/api/takeovers?products.product.brand.id=%d', $samsung->getId()), [
+            'headers' => ['Accept' => 'application/json'],
+        ]);
+
+        $content = json_decode($response->getContent(), true);
+
+        $this->assertResponseIsSuccessful();
+        $this->assertCount(2, $content);
+        $this->assertMatchesResourceCollectionJsonSchema(Takeover::class);
+
+        // First takeover
+        $this->assertCount(3, $content[0]['products']);
+
+        $this->assertEquals("Galaxy S22", $content[0]['products'][0]['product']['name']);
+        $this->assertEquals("Galaxy Z Fold 2", $content[0]['products'][1]['product']['name']);
+        $this->assertEquals("OnePlus Nord 2T", $content[0]['products'][2]['product']['name']);
+
+        // Second takeover
+        $this->assertCount(2, $content[1]['products']);
+
+        $this->assertEquals("OnePlus 10 Pro", $content[1]['products'][0]['product']['name']);
+
+        $this->assertEquals("Galaxy Z Fold 2", $content[1]['products'][1]['product']['name']);
     }
 
     protected function tearDown(): void
