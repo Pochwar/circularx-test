@@ -55,7 +55,4 @@ jobs:
             ## —— Tests ———————————————————————————————————————————————————————————
             - name: Run functionnal and unit tests
               run: |
-                  cp .env.test .env.test
-                  cp .env.test .env
-                  cp phpunit.ci.xml phpunit.xml
                   composer test
