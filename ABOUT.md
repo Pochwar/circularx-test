@@ -177,28 +177,24 @@ J'ai ainsi ajouté un step pour les tests dans le workflow existant. Mais cela n
 
 Après un peu de temps a tester et adapter, j'ai fini par faire fonctionner les test dans Github Actions.
 
-### TODO
-- finir les tests
-  - ~~Consulter le prix total et l’email client de la commande de reprise~~
-  - ~~Consulter les produits attachés à une commande~~
-  - ~~Lister les produits pouvant être repris~~
-  - ~~Lister les commandes de reprise existantes comportant au moins un produit donné~~
-  - Lister les commandes de reprise existantes comportant au moins une marque donnée
-  - ~~test prix positif produit~~
-  - ~~test produit unique~~
+### Conclusion - reflexions
+Faire cet exercice sur un temps relativement court (3 soirées) était assez stimulant.
+L'exercice est intéressant car il est relativement bien cadré tout en laissant des choix à faire.
 
+Ainsi, le choix d'utiliser un projet Symfony déjà Dockerisé m'a fait gagner du temps, tout en me sortant de ma zone de confort sur certains aspects, en effet, je ne connaissait pas Symfony 6 (même si peu de changement par rapport a Symfony 5) ni PostgreSQL (peu de changements perçus de ma part  comparé a MySQL).
 
-### Reflexions
-temps court = stimulant
+De la même manière, APIPlatform est un choix que j'ai fais assez rapidement, toujours dans l'optique de gagner du temps vu le délai. J'ai l'avais utilisé une fois il y a longtemps pour un petit projet, autant dire que je ne le maitrise pas du tout.
 
-Api Platform = gain de temps + prise de risque car peu utilisé
-assez pratique, prise en main facile, qui d des limitations sur cas matiers complexes
-découverte json-ld a approfondir
+J'ai d'abord été agréablement surpris par la rapidité avec la quelle j'ai pu mettre en place un API fonctionnelle juste en créant mes entités. Puis j'ai regretté mon choix quand j'ai commencé a me confronté a des problématiques que j'aurais su résoudre très facilement dans un autre contexte. En effet, j'ai concu plusieurs API en PHP avec Laravel ou Symfony, et j'ai toujours fait ça "à la main", avec un controller qui prend en charge les requêtes, fait appel à un manager pour la couche métier, qui fait appel à un repository pour persister les entités.
 
-Symfony 6 jamais utilisé
-POSTgreSQL jamias utilisé
-Github Actions jamais utilisé
-import csv jamais fait
+Ainsi j'organise mes fichiers et je sais qui gère quoi. Avec API Platform, tout est géré par le package et ici, pas de Controller d'API, pas de manager, juste des attributes a mettre dans les entités pour faire ce dont on a besoin.
 
-plus de test
-builder de test
+Cependant, la documentation d'API Platform est bien faite, et j'ai su faire tout ce dont j'avais besoin pour cet exercice, ou presque !
+
+En effet, la validation avec les constraints de Symfony n'a pas fonctionné sur une propriété, le `price` de l'entité pivot `TakeoverProduct` et je pense que c'ets justement, car c'est une entité pivot. Par manque de temps, j'ai mis en place une solution de secours.
+
+Pour finir sur API Platform, j'ai d'abord essayé d'utiliser le format par defaut, json-ld, que je ne connaissais pas, mais cela m'a ralenti dans la mise en place des tests. N'ayant pas le temps d'approfondir ma découverte de ce format, j'ai fini par trouver comment mettre un format json, que je maitrise mieux. J'aimerai tout de même prendre le temps de découvrir json-ld.
+
+J'ai, sauf erreur de ma part, réalisé toutes les demandes de l'exercice (sauf l'import au format json, je n'ai fait que les fichiers csv) en essayant de trouver le bon équilibre entre rapidité et qualité.
+
+Si j'avais eu plus de temps, j'aurais mis en place plus de tests (beaucoup de cas d'usages ne sont pas testés), j'aurais passé plus de temps a bien mettre en place un système de validation, j'aurais utilisé des builders de test plutot que des fixtures (plus lisible et plus maintenable) et j'aurais utilisé des outils de qualité de code comme PHP Cs-Fixer et PHP Stan.
