@@ -164,7 +164,15 @@ bin/console app:import-product-csv products.csv
 ```
 
 ### Github actions
-Je n'avais jamais utilisé Github actions avant ce projet. Je connais Gitlab CI et j'ai déjà mis en place
+Je n'avais jamais utilisé Github actions avant ce projet. Je connais Gitlab CI et j'ai déjà mis en place un procedure de déploiement continu sur un petit projet perso, ainsi que des tests front avec Cypress. J'avais donc une compréhension de ce qu'est Github Actions.
+
+En cherchant comment mettre cela en place sur le projet, je me rend compte qu'une CI est déjà en place (inclus dans le repo sur lequel je me suis basé) pour faire le build de l'application.
+
+J'ai donc cherché comment ajouter les tests PHPUnit a cette CI et j'ai trouvé une action pour PHPUNit pour Symfony dans le marketplace de github : https://github.com/marketplace/actions/phpunit-for-symfony
+
+J'ai ainsi ajouté un step pour les tests dans le workflow existant. Mais cela ne fonctionnait pas car la version de PHP dans le container n'est pas la bone (7.4 au lieu de 8.1). Après avoir passé du temps a chercher comment changer la version de PHP, en vain, j'ai fini par tester une autre manière de faire avec ce tuto : https://antonshell.me/en/post/github-actions-symfony.
+
+Après un peu de temps a tester et adapter, j'ai fini par faire fonctionner les test dans Github Actions.
 
 ### TODO
 - finir les tests
@@ -175,5 +183,3 @@ Je n'avais jamais utilisé Github actions avant ce projet. Je connais Gitlab CI 
   - Lister les commandes de reprise existantes comportant au moins une marque donnée
   - test prix positif produit
   - test produt unique
-
-- mettre en place GitHub Actions

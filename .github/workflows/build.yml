@@ -11,10 +11,6 @@ jobs:
         steps:
             - name: Checkout
               uses: actions/checkout@v2
-#            - name: Setup PHP
-#              uses: shivammathur/setup-php@v2
-#              with:
-#                php-version: 8.1
             - name: Pull images
               run: docker-compose pull
             - name: Start services
@@ -33,7 +29,3 @@ jobs:
               run: curl http://localhost
             - name: Check HTTPS reachability
               run: curl -k https://localhost
-#            - name: Composer for PHPUnit
-#              uses: php-actions/composer@v1
-#            - name: PHPUnit
-#              uses: chindit/actions-phpunit-symfony@master
