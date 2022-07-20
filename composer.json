@@ -95,7 +95,6 @@
         "symfony/css-selector": "6.1.*",
         "symfony/http-client": "6.1.*",
         "symfony/maker-bundle": "^1.44",
-        "symfony/monolog-bundle": "^3.8",
         "symfony/phpunit-bridge": "^6.1"
     }
 }

@@ -163,6 +163,9 @@ Un fichier d'exemple se trouve dans le répertoire `/import`, il est possible de
 bin/console app:import-product-csv products.csv
 ```
 
+### Github actions
+Je n'avais jamais utilisé Github actions avant ce projet. Je connais Gitlab CI et j'ai déjà mis en place
+
 ### TODO
 - finir les tests
   - Consulter le prix total et l’email client de la commande de reprise
