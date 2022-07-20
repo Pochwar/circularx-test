@@ -54,5 +54,4 @@ jobs:
 #                  args: --config=.php_cs.dist --diff --dry-run
             ## —— Tests ———————————————————————————————————————————————————————————
             - name: Run functionnal and unit tests
-              run: |
-                  composer test
+              run: bin/phpunit
