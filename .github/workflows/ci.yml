@@ -33,5 +33,7 @@ jobs:
               run: curl http://localhost
             - name: Check HTTPS reachability
               run: curl -k https://localhost
+            - name: Composer for PHPUnit
+              uses: php-actions/composer@v1
             - name: PHPUnit
               uses: chindit/actions-phpunit-symfony@master
